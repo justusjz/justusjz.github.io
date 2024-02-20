@@ -38,6 +38,14 @@ export default {
 			});
 		} else if (request.method == 'POST') {
 			const body = RequestType.parse(await request.json());
+			if (body.author.length < 1 || body.content.length < 1) {
+				return new Response('Author and content must not be empty.', {
+					status: 400,
+					headers: {
+						'access-control-allow-origin': '*',
+					},
+				});
+			}
 			await env.DB.prepare(
 				'INSERT INTO Comment (postId, author, content) VALUES (?, ?, ?)'
 			)

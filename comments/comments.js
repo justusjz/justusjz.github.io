@@ -43,6 +43,14 @@ async function onComment(postId) {
   window.localStorage.setItem('authorName', authorElem.value);
   const contentElem = document.getElementById('comment_content_input');
   const comments = document.getElementById('comments');
+  if (authorElem.value.length === 0) {
+    alert('Please enter your name before commenting');
+    return;
+  }
+  if (contentElem.value.length === 0) {
+    alert('Please enter the text you want to comment');
+    return;
+  }
   await fetch(`${workerUrl}/?post=${postId}`, {
     method: 'POST',
     body: JSON.stringify({
@@ -55,5 +63,5 @@ async function onComment(postId) {
     content: contentElem.value,
   });
   comments.appendChild(comment);
-  contentElem.textContent = '';
+  contentElem.value = '';
 }

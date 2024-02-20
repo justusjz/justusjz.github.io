@@ -1,4 +1,4 @@
-const workerUrl = 'https://justusjz-blog.justus-zorn.workers.dev';
+const workerUrl = 'https://blog.justusjz.workers.dev';
 
 function createComment(comment) {
   const author = document.createElement('h4');

@@ -1,127 +1,122 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      body {
-        font-family: "Courier New", Courier, monospace;
-      }
-    </style>
-    <script src="../comments/comments.js"></script>
-    <link rel="stylesheet" href="../comments/comments.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <a href="../index.html">Back</a>
-    <h1>Creating a Blog</h1>
-    <p>
-      I'm always working on lots of projects privately, and I enjoy telling my
-      coworkers about it. A couple of weeks ago, one of them proposed that I
-      should write a blog about those projects, so other people could see what
-      I'm doing and maybe even give me some ideas. After thinking about it for a
-      while, I decided that it was a great idea, and got to work.
-    </p>
-    <p>
-      At first, I researched some systems to design blogs. One of the first ones
-      I found was <a href="https://jekyllrb.com/">Jekyll</a>, which can be
-      easily used with GitHub Pages. However, Jekyll doesn't have direct support
-      for comments, and I thought a comment system would be quite nice, because
-      I like to know what others are thinking about my work. Also, sometimes I
-      overlook something very simple, so it might be good to have someone point
-      those things out. Therefore, I decided to abandon Jekyll, and find my own
-      solution.
-    </p>
-    <p>
-      The first problem was how to create the blog posts themselves. I'm very
-      familiar with Markdown and generally like writing in it, so at first I
-      wanted to write the posts using it. I looked up some ways to convert
-      Markdown to HTML, found some libraries like
-      <a href="https://github.com/showdownjs/showdown">showdown</a>, and thought
-      I could just build my own. To have something of a challenge, I wrote the
-      Markdown parser in C. I was making good progress, but decided that for
-      now, I'd just like to get the blog running, and if I really wanted to do
-      that, build that Markdown parser later.
-    </p>
-    <p>
-      Since I'm very much in love with Lisp, I researched whether there were
-      Markdown-like languages written in Lisp, and there are
-      <a href="https://www.cliki.net/Lisp%20Markup%20Languages">countless</a>.
-      Still, I decided that for now, using plain HTML would be fine, but I'll
-      definitely revisit this issue at some point, maybe using my own
-      programming language then. Hosting these HTML files is done using GitHub
-      Pages, but there isn't much interesting to say about that.
-    </p>
-    <p>
-      With this problem solved, I had to work on the other problem: The comment
-      system, the very reason I abandoned Jekyll in the first place. I found a
-      really nice tool called <a href="https://utteranc.es/">utterances</a>,
-      which uses GitHub issues to store comments. I looked into how it worked,
-      and ultimately decided that I won't use it, since it relies on their own
-      Cloudflare worker which I would also have to authenticate to modify my
-      GitHub issues. Also, by now I really wanted to do stuff myself, so I took
-      a little inspiration from utterances and used Cloudflare.
-    </p>
-    <h2>Cloudflare Workers</h2>
-    <p>
-      For anybody who's unfamiliar with that,
-      <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> are
-      serverless functions, meaning that we can write code which is executed by
-      Cloudflare once a request comes in, without having to worry about managing
-      the necessary servers. I'm not someone who thinks that serverless is the
-      solution to everything, there are advantages and disadvantages to
-      everything. However, in my case, Cloudflare Workers were very attractive,
-      especially since they offer a free plan that will probably suffice for a
-      very long time.
-    </p>
-    <p>
-      Instead of using GitHub issues to store the comments like utterances, I
-      decided to try out
-      <a href="https://developers.cloudflare.com/d1/">Cloudflare D1</a>, which
-      is a serverless relational database. Just to prevent misunderstandings,
-      serverless doesn't mean that there isn't a server involved, like in
-      peer-to-peer. Instead, it just means that Cloudflare manages those
-      servers, not we.
-    </p>
-    <p>
-      Getting everything to work was really straightforward, connecting the
-      Worker to D1 is really simple, as is debugging and deploying the code
-      itself. At work, we're using Azure for running our services, most of which
-      are also serverless functions. Generally, my experience with Cloudflare
-      was much more positive. Wrangler, the command line tool for Cloudflare
-      Workers, has a very nice interface and supports debugging with local
-      databases as well as hot code reloading. Both of these are features I miss
-      very much when using Azure.
-    </p>
-    <p>
-      The comment system itself is quite simple for now, it just supports a
-      single list of comments (so no parent-child-relationships) and comments
-      can't be deleted or modified. Also, for now there is absolutely no
-      authentication, so you don't need to create user accounts for commenting.
-      This is something I'll probably change in the future, but who knows
-      whether someone will comment here anyways. If I add such authentication,
-      I'll certainly write another post about it. Btw, since Cloudflare Workers
-      run using V8, using TypeScript was the obvious choice. I might have
-      enjoyed using Rust and compiling to WebAssembly, too, but I really wasn't
-      in the mood for doing any kind of binding, that's something for another
-      day.
-    </p>
-    <p>
-      The architecture is really simple, comments are added using POST requests,
-      and listed using GET requests. There is no paging or anything implemented,
-      because I don't think that's necessary right now. I found it important to
-      not develop anything you don't need right now, because I constantly like
-      to design some stuff, just to end up scrapping it because nobody needs it.
-      The only security measure I implemented was to add a check whether the
-      post id of the comment actually exists, so nobody uses the system for
-      their own posts without the comments even showing up anywhere.
-    </p>
-    <p>
-      If you're interested in the code I wrote for my comment system, you can
-      look at it in the
-      <a href="https://github.com/justusjz/justusjz.github.io">repository</a>
-      this site is hosted from. It's nothing complicated really. Also, you can
-      try it out below, and please tell me what you think, both about the
-      comment system and this blog post. Have a nice day!
-    </p>
-    <div id="comments" post="1"></div>
-  </body>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="../comments/comments.js"></script>
+		<link rel="stylesheet" href="../style.css" />
+	</head>
+	<body>
+		<a href="../index.html">Back</a>
+		<h1>Creating a Blog</h1>
+		<p>
+			I'm always working on lots of projects privately, and I enjoy telling my
+			coworkers about it. A couple of weeks ago, one of them proposed that I
+			should write a blog about those projects, so other people could see what
+			I'm doing and maybe even give me some ideas. After thinking about it for a
+			while, I decided that it was a great idea, and got to work.
+		</p>
+		<p>
+			At first, I researched some systems to design blogs. One of the first ones
+			I found was <a href="https://jekyllrb.com/">Jekyll</a>, which can be
+			easily used with GitHub Pages. However, Jekyll doesn't have direct support
+			for comments, and I thought a comment system would be quite nice, because
+			I like to know what others are thinking about my work. Also, sometimes I
+			overlook something very simple, so it might be good to have someone point
+			those things out. Therefore, I decided to abandon Jekyll, and find my own
+			solution.
+		</p>
+		<p>
+			The first problem was how to create the blog posts themselves. I'm very
+			familiar with Markdown and generally like writing in it, so at first I
+			wanted to write the posts using it. I looked up some ways to convert
+			Markdown to HTML, found some libraries like
+			<a href="https://github.com/showdownjs/showdown">showdown</a>, and thought
+			I could just build my own. To have something of a challenge, I wrote the
+			Markdown parser in C. I was making good progress, but decided that for
+			now, I'd just like to get the blog running, and if I really wanted to do
+			that, build that Markdown parser later.
+		</p>
+		<p>
+			Since I'm very much in love with Lisp, I researched whether there were
+			Markdown-like languages written in Lisp, and there are
+			<a href="https://www.cliki.net/Lisp%20Markup%20Languages">countless</a>.
+			Still, I decided that for now, using plain HTML would be fine, but I'll
+			definitely revisit this issue at some point, maybe using my own
+			programming language then. Hosting these HTML files is done using GitHub
+			Pages, but there isn't much interesting to say about that.
+		</p>
+		<p>
+			With this problem solved, I had to work on the other problem: The comment
+			system, the very reason I abandoned Jekyll in the first place. I found a
+			really nice tool called <a href="https://utteranc.es/">utterances</a>,
+			which uses GitHub issues to store comments. I looked into how it worked,
+			and ultimately decided that I won't use it, since it relies on their own
+			Cloudflare worker which I would also have to authenticate to modify my
+			GitHub issues. Also, by now I really wanted to do stuff myself, so I took
+			a little inspiration from utterances and used Cloudflare.
+		</p>
+		<h2>Cloudflare Workers</h2>
+		<p>
+			For anybody who's unfamiliar with that,
+			<a href="https://workers.cloudflare.com/">Cloudflare Workers</a> are
+			serverless functions, meaning that we can write code which is executed by
+			Cloudflare once a request comes in, without having to worry about managing
+			the necessary servers. I'm not someone who thinks that serverless is the
+			solution to everything, there are advantages and disadvantages to
+			everything. However, in my case, Cloudflare Workers were very attractive,
+			especially since they offer a free plan that will probably suffice for a
+			very long time.
+		</p>
+		<p>
+			Instead of using GitHub issues to store the comments like utterances, I
+			decided to try out
+			<a href="https://developers.cloudflare.com/d1/">Cloudflare D1</a>, which
+			is a serverless relational database. Just to prevent misunderstandings,
+			serverless doesn't mean that there isn't a server involved, like in
+			peer-to-peer. Instead, it just means that Cloudflare manages those
+			servers, not we.
+		</p>
+		<p>
+			Getting everything to work was really straightforward, connecting the
+			Worker to D1 is really simple, as is debugging and deploying the code
+			itself. At work, we're using Azure for running our services, most of which
+			are also serverless functions. Generally, my experience with Cloudflare
+			was much more positive. Wrangler, the command line tool for Cloudflare
+			Workers, has a very nice interface and supports debugging with local
+			databases as well as hot code reloading. Both of these are features I miss
+			very much when using Azure.
+		</p>
+		<p>
+			The comment system itself is quite simple for now, it just supports a
+			single list of comments (so no parent-child-relationships) and comments
+			can't be deleted or modified. Also, for now there is absolutely no
+			authentication, so you don't need to create user accounts for commenting.
+			This is something I'll probably change in the future, but who knows
+			whether someone will comment here anyways. If I add such authentication,
+			I'll certainly write another post about it. Btw, since Cloudflare Workers
+			run using V8, using TypeScript was the obvious choice. I might have
+			enjoyed using Rust and compiling to WebAssembly, too, but I really wasn't
+			in the mood for doing any kind of binding, that's something for another
+			day.
+		</p>
+		<p>
+			The architecture is really simple, comments are added using POST requests,
+			and listed using GET requests. There is no paging or anything implemented,
+			because I don't think that's necessary right now. I found it important to
+			not develop anything you don't need right now, because I constantly like
+			to design some stuff, just to end up scrapping it because nobody needs it.
+			The only security measure I implemented was to add a check whether the
+			post id of the comment actually exists, so nobody uses the system for
+			their own posts without the comments even showing up anywhere.
+		</p>
+		<p>
+			If you're interested in the code I wrote for my comment system, you can
+			look at it in the
+			<a href="https://github.com/justusjz/justusjz.github.io">repository</a>
+			this site is hosted from. It's nothing complicated really. Also, you can
+			try it out below, and please tell me what you think, both about the
+			comment system and this blog post. Have a nice day!
+		</p>
+		<div id="comments" post="1"></div>
+	</body>
 </html>

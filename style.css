@@ -1,0 +1,20 @@
+html {
+	display: flex;
+	justify-content: center;
+}
+
+body {
+	font-family: 'Courier New', Courier, monospace;
+	max-width: 600px;
+	margin: 20px;
+}
+
+.inherit-font {
+	font: inherit;
+}
+
+#comment_content_input {
+	resize: none;
+	margin-top: 5px;
+	width: 98%;
+}

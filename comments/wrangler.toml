@@ -1,0 +1,8 @@
+name = "justusjz-blog"
+main = "src/index.ts"
+compatibility_date = "2024-02-08"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "justusjz-blog"
+database_id = "3ba23aaa-bf0e-4bc0-839a-4dd5e3c50336"

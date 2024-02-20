@@ -1,0 +1,9 @@
+.inherit-font {
+  font: inherit;
+}
+
+textarea {
+  resize: none;
+  margin-top: 5px;
+  width: 100%;
+}

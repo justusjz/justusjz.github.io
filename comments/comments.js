@@ -17,10 +17,10 @@ window.onload = async function () {
   commentSection.innerHTML = `
 <h2>Comments</h2>
 <div>
-  <input id="comment_author_input" class="inherit-font"  type="text" placeholder="Comment as..." spellcheck="false"/>
+  <input id="comment_author_input" class="inherit-font" type="text" placeholder="Comment as..." spellcheck="false"/>
 </div>
 <div>
-  <textarea id="comment_content_input" class="inherit-font"  placeholder="Comment..." spellcheck="false"></textarea>
+  <textarea id="comment_content_input" class="inherit-font" rows=5 placeholder="Comment..." spellcheck="false"></textarea>
 </div>
 <button class="inherit-font" onclick="onComment(${postId})">Comment</button>
 <div id="comments_loaded"></div>`;

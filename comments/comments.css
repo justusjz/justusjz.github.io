@@ -2,7 +2,7 @@
   font: inherit;
 }
 
-textarea {
+#comment_content_input {
   resize: none;
   margin-top: 5px;
   width: 100%;
